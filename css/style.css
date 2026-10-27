@@ -1,0 +1,126 @@
+@font-face {
+    font-family: 'sandwich-pixel';
+    src:
+        url('../assets/fonts/sandwich-pixel-rounded.woff2') format('woff2'),
+        url('../assets/fonts/sandwich-pixel-rounded.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #07080f;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family:  "sandwich-pixel", "Arial", sans-serif;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-areas: "stage";
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#stage {
+  grid-area: stage;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px;
+}
+
+#game {
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px #1d2244, 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+#left-ctrl, #right-ctrl { display: none; }
+
+/* ---------- touch controls (portrait: below the game) ---------- */
+body.touch #app {
+  grid-template-areas: "stage stage" "left right";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
+}
+body.touch #left-ctrl, body.touch #right-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px 20px;
+}
+body.touch #left-ctrl { grid-area: left; }
+body.touch #right-ctrl { grid-area: right; flex-direction: column; gap: 14px; }
+
+/* landscape: controls on either side of the game */
+@media (orientation: landscape) {
+  body.touch #app {
+    grid-template-areas: "left stage right";
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1fr;
+  }
+}
+
+#dpad {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #252a4d 0%, #161a33 70%);
+  box-shadow: inset 0 0 0 3px #2f3566;
+  touch-action: none;
+}
+#dpad .arrow {
+  position: absolute;
+  width: 0; height: 0;
+  border: 16px solid transparent;
+  opacity: 0.55;
+}
+#dpad .up    { top: 10px;    left: 59px; border-bottom: 22px solid #fff; border-top-width: 0; }
+#dpad .down  { bottom: 10px; left: 59px; border-top: 22px solid #fff; border-bottom-width: 0; }
+#dpad .left  { left: 10px;   top: 59px;  border-right: 22px solid #fff; border-left-width: 0; }
+#dpad .right { right: 10px;  top: 59px;  border-left: 22px solid #fff; border-right-width: 0; }
+#dpad[data-dir="U"] .up, #dpad[data-dir="D"] .down,
+#dpad[data-dir="L"] .left, #dpad[data-dir="R"] .right { opacity: 1; border-color: transparent; }
+#dpad[data-dir="U"] .up    { border-bottom-color: #ffcc33; }
+#dpad[data-dir="D"] .down  { border-top-color: #ffcc33; }
+#dpad[data-dir="L"] .left  { border-right-color: #ffcc33; }
+#dpad[data-dir="R"] .right { border-left-color: #ffcc33; }
+
+button {
+  font-family: inherit;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  touch-action: none;
+}
+#btn-pepper {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #c1121f;
+  box-shadow: 0 6px 0 #6e0a12;
+  font-size: 11px;
+}
+#btn-pepper.down { transform: translateY(4px); box-shadow: 0 2px 0 #6e0a12; }
+.small-btns { display: flex; gap: 14px; }
+.small-btns button {
+  width: 44px;
+  height: 32px;
+  border-radius: 16px;
+  background: #2a2f55;
+  font-size: 10px;
+}
+.small-btns button.down { background: #3d4480; }
