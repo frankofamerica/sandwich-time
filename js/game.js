@@ -79,7 +79,7 @@
     G.pepper = CFG.startingPepper;
     G.levelNum = 1;
     G.nextLifeAt = CFG.extraLifeAt;
-    store.set('char', G.charIndex);
+    // store.set('char', G.charIndex);
     Sfx.start();
     loadLevel();
   }
@@ -760,7 +760,7 @@
   }
 
   function drawSelect() {
-    text('CHOOSE YOUR CHEF', W / 2, 60, 14, '#ffcc33');
+    text('CHOOSE YOUR PLAYER', W / 2, 60, 14, '#ffcc33');
     selectTiles().forEach((t, i) => {
       const sel = i === G.charIndex, def = CFG.characters[i];
       roundRect(t.x - 3, t.y - 3, t.w + 6, t.h + 6, 10, sel ? '#ffcc33' : '#2a2f55');
@@ -772,7 +772,7 @@
       lines.forEach((ln, j) => text(ln, t.x + t.w / 2, t.y + 100 + j * 11 - (lines.length - 1) * 2, 7, sel ? '#fff' : '#aaa'));
     });
     const b = START_BTN;
-    roundRect(b.x, b.y, b.w, b.h, 10, Math.floor(G.t * 3) % 2 ? '#e63946' : '#c1121f');
+    roundRect(b.x, b.y, b.w, b.h, 10, Math.floor(G.t * 3) % 2 ? '#F6E300' : '#FF6600');
     text('START', W / 2, b.y + b.h / 2 + 1, 14, '#fff');
     const touch = document.body.classList.contains('touch');
     text(touch ? 'TAP A CHEF, THEN START' : 'ARROWS TO CHOOSE, ENTER TO START', W / 2, 480, 7, '#888');
@@ -782,7 +782,7 @@
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.fillStyle = '#07080f';
+    ctx.fillStyle = '#07080f'; // CHANGE GAME BACKGROUND COLOR HERE
     ctx.fillRect(0, 0, W, H);
     if (G.state === 'loading') text('LOADING...', W / 2, H / 2, 12, '#fff');
     else if (G.state === 'title') drawTitle();
