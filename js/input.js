@@ -42,7 +42,20 @@ window.Input = (() => {
     };
     if (window.matchMedia('(pointer: coarse)').matches) enableTouchUI();
     window.addEventListener('touchstart', () => { enableTouchUI(); window.Sfx.unlock(); }, { passive: true });
-    document.addEventListener('gesturestart', e => e.preventDefault());
+    // No zooming of any kind. iOS Safari ignores user-scalable=no in the
+    // viewport meta, so block pinch (gesture*/multi-touch) and double-tap here.
+    const noZoom = e => e.preventDefault();
+    ['gesturestart', 'gesturechange', 'gestureend', 'dblclick'].forEach(t =>
+      document.addEventListener(t, noZoom, { passive: false }));
+    document.addEventListener('touchmove', e => {
+      if (e.touches.length > 1 || (e.scale !== undefined && e.scale !== 1)) e.preventDefault();
+    }, { passive: false });
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', e => {
+      const now = Date.now();
+      if (now - lastTouchEnd < 350) e.preventDefault();
+      lastTouchEnd = now;
+    }, { passive: false });
 
     // D-pad: direction comes from where the thumb is relative to the pad
     // center, so you can slide between directions without lifting.
