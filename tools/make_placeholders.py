@@ -238,29 +238,30 @@ def make_title():
     return cv
 
 
-PICKLE = [
+COFFEE = [
+    "....s...s.......",
+    ".....s...s......",
+    "....s...s.......",
+    ".....s...s......",
     "................",
-    "................",
-    "................",
-    "...........KKK..",
-    ".........KKGGGK.",
-    ".......KKGGgGGK.",
-    ".....KKGGgGGGGK.",
-    "....KGGGGGGgGK..",
-    "...KGGgGGGGGGK..",
-    "..KGGGGGGgGGK...",
-    ".KGGGgGGGGGK....",
-    ".KGGGGGGGKK.....",
-    ".KGgGGGKK.......",
-    "..KKKKK.........",
-    "................",
-    "................",
+    "..KKKKKKKKKK....",
+    "..KCCCCCCCCK....",
+    "..KWWWWWWWWKKK..",
+    "..KWWWWWWWWK.K..",
+    "..KRRRRRRRRK.K..",
+    "..KWWWWWWWWK.K..",
+    "..KWWWWWWWWKKK..",
+    "..KwWWWWWWwK....",
+    "...KwwwwwwK.....",
+    ".KKKKKKKKKKKK...",
+    "..KKKKKKKKKK....",
 ]
 
 
-def make_pickle():
+def make_coffee():
     cv = Canvas(16, 16)
-    cv.art(PICKLE, {"K": hex_rgba("#1f3d12"), "G": hex_rgba("#4c9a2a"), "g": hex_rgba("#86c94f")})
+    cv.art(COFFEE, {"K": hex_rgba("#2b1a10"), "C": hex_rgba("#6f3b1c"), "W": hex_rgba("#f5f1e8"),
+                    "w": hex_rgba("#cfc6b4"), "R": hex_rgba("#c1121f"), "s": hex_rgba("#d9d9d9")})
     return cv
 
 
@@ -294,7 +295,7 @@ def main():
     make_title().scaled(4).save(os.path.join(ROOT, "title", "title.png"))
 
     os.makedirs(os.path.join(ROOT, "bonus"), exist_ok=True)
-    make_pickle().scaled(8).save(os.path.join(ROOT, "bonus", "pickle.png"))
+    make_coffee().scaled(8).save(os.path.join(ROOT, "bonus", "coffee.png"))
 
 
 if __name__ == "__main__":

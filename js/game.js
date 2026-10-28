@@ -645,15 +645,21 @@
       ctx.drawImage(img, b.x - dw / 2, b.y - dh, dw, dh);
       return;
     }
-    // fallback if the PNG is missing: a pickle
-    ctx.save();
-    ctx.translate(b.x, b.y - 10);
-    ctx.rotate(-0.4);
-    ctx.fillStyle = '#4c9a2a';
-    ctx.beginPath(); ctx.ellipse(0, 0, 10, 6, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#86c94f';
-    ctx.fillRect(-6, -3, 2, 2); ctx.fillRect(0, -4, 2, 2); ctx.fillRect(4, 0, 2, 2); ctx.fillRect(-2, 2, 2, 2);
-    ctx.restore();
+    // fallback if the PNG is missing: a cup of coffee
+    const x = b.x - 8, y = b.y;
+    ctx.fillStyle = '#2b1a10';
+    ctx.fillRect(x - 2, y - 3, 20, 3);                 // saucer
+    ctx.fillStyle = '#f5f1e8';
+    ctx.fillRect(x, y - 15, 13, 12);                   // cup
+    ctx.strokeStyle = '#f5f1e8'; ctx.lineWidth = 2;
+    ctx.strokeRect(x + 13, y - 12, 4, 5);              // handle
+    ctx.fillStyle = '#6f3b1c';
+    ctx.fillRect(x + 1, y - 15, 11, 2);                // coffee
+    ctx.fillStyle = '#c1121f';
+    ctx.fillRect(x, y - 10, 13, 2);                    // stripe
+    ctx.fillStyle = '#d9d9d9';                         // steam
+    const s = Math.floor(G.t * 4) % 2;
+    ctx.fillRect(x + 3 + s, y - 20, 1, 3); ctx.fillRect(x + 8 - s, y - 21, 1, 3);
   }
 
   function drawEnemy(e) {

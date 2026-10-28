@@ -28,7 +28,7 @@ window.GAME_CONFIG = {
   },
 
   // Bonus item (+1 pepper and points). Drawn bottom-center on the floor.
-  bonus: { name: 'Pickle', sprite: 'assets/bonus/pickle.png', size: 24 },
+  bonus: { name: 'Coffee', sprite: 'assets/bonus/coffee.png', size: 24 },
 
   spriteSize: 32,       // on-screen size (game pixels) of characters/villains
   playerSpeed: 78,       // pixels per second
