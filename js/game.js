@@ -42,7 +42,7 @@
   const G = {
     state: 'loading', t: 0, timer: 0, prevState: null,
     score: 0, hi: store.get('hi', 0), lives: 0, pepper: 0, levelNum: 1, nextLifeAt: 0,
-    charIndex: Math.min(store.get('char', 0), CFG.characters.length - 1),
+    // charIndex: Math.min(store.get('char', 0), CFG.characters.length - 1), 
     level: null, subs: [], ingredients: [], enemies: [], player: null,
     cloud: null, popups: [], bonus: null, dropCount: 0,
   };
