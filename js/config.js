@@ -22,7 +22,7 @@ window.GAME_CONFIG = {
 
   // 3 villains. speed = movement multiplier, smart = 0..1 chance to chase you.
   villains: {
-    soda:    { name: 'Soda Can', sprite: 'assets/villains/soda.png',    frames: 1, color: '#d62828', speed: 1.05, smart: 0.65 },
+    soda:    { name: 'Tab Soda Can', sprite: 'assets/villains/soda-can.png',    frames: 1, color: '#d62828', speed: 1.05, smart: 0.65 },
     onion:   { name: 'Onion',    sprite: 'assets/villains/onion.png',   frames: 1, color: '#d7b4e6', speed: 0.95, smart: 0.80 },
     cupcake: { name: 'Cupcake',  sprite: 'assets/villains/cupcake.png', frames: 1, color: '#ff8fc7', speed: 0.90, smart: 0.90 },
   },

@@ -782,7 +782,7 @@
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.fillStyle = '#07080f'; // CHANGE GAME BACKGROUND COLOR HERE
+    ctx.fillStyle = '#091140'; // CHANGE GAME BACKGROUND COLOR HERE
     ctx.fillRect(0, 0, W, H);
     if (G.state === 'loading') text('LOADING...', W / 2, H / 2, 12, '#fff');
     else if (G.state === 'title') drawTitle();
