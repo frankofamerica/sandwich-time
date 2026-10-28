@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps          # use "ftp" if FTPS fails
           local-dir: ./           # what to upload (must end in /)
-          server-dir: myfolder/   # where it goes on Bluehost (must end in /)
+          server-dir: ./   # where it goes on Bluehost (must end in /)
           exclude: |
             **/.git*
             **/.git*/**
