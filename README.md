@@ -36,7 +36,7 @@ paths and names in **`js/config.js`**.
 |---|---|
 | `assets/title/title.png` | Title-screen logo (currently says "Sandwich Time") |
 | `assets/characters/character1.png` … `character7.png` | The 7 selectable characters |
-| `assets/villains/soda.png` | Soda Can villain |
+| `assets/villains/soda-can.png` | Soda Can villain |
 | `assets/villains/onion.png` | Onion villain |
 | `assets/villains/cupcake.png` | Cupcake villain |
 

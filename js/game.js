@@ -573,7 +573,7 @@
         ctx.fillStyle = '#ffb3a6'; ctx.fillRect(x + 4, y - 4, 2, 1); ctx.fillRect(x + 10, y - 3, 2, 1);
         break;
       case 'cheese':
-        ctx.fillStyle = '#ffcc33';
+        ctx.fillStyle = '#F6E300';
         ctx.fillRect(x, y - 6, w, 4);
         ctx.beginPath(); ctx.moveTo(x + 4, y - 2); ctx.lineTo(x + 11, y - 2); ctx.lineTo(x + 7, y + 1); ctx.fill();
         ctx.fillStyle = '#ffe48a'; ctx.fillRect(x, y - 6, w, 1);
@@ -681,21 +681,26 @@
   function drawCloud(c) {
     const k = c.t / c.life;
     ctx.save();
-    ctx.globalAlpha = 0.85 * (1 - k * 0.6);
-    for (let i = 0; i < 7; i++) {
-      const px = c.x + ((i * 37) % c.w), py = c.y + ((i * 23) % c.h);
-      ctx.fillStyle = i % 2 ? '#e6e6e6' : '#9e9e9e';
-      ctx.beginPath(); ctx.arc(px, py, 5 + k * 6, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 0.9 * (1 - k * 0.7);
+    // Fine grains: fixed pseudo-random spots that drift outward and settle as the cloud fades
+    const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+    for (let i = 0; i < 48; i++) {
+      const rx = ((i * 73 + 17) % 101) / 100, ry = ((i * 41 + 29) % 97) / 96;
+      const px = c.x + rx * c.w, py = c.y + ry * c.h;
+      const dx = (px - cx) * k * 0.25, dy = (py - cy) * k * 0.25 + k * 4;
+      const s = i % 3 === 0 ? 2 : 1.5;
+      ctx.fillStyle = i % 4 ? '#f2f2f2' : '#b8b8b8';
+      ctx.fillRect(Math.round(px + dx), Math.round(py + dy), s, s);
     }
     ctx.restore();
   }
 
   function drawHUD() {
-    text('SCORE', 16, 14, 8, '#ff4d4d', 'left');
+    text('SCORE', 16, 14, 8, '#FF6600', 'left');
     text(String(G.score).padStart(6, '0'), 16, 28, 10, '#fff', 'left');
-    text('HI-SCORE', W / 2, 14, 8, '#ff4d4d');
+    text('HI-SCORE', W / 2, 14, 8, '#FF6600');
     text(String(G.hi).padStart(6, '0'), W / 2, 28, 10, '#fff');
-    text('LEVEL', W - 16, 14, 8, '#ff4d4d', 'right');
+    text('LEVEL', W - 16, 14, 8, '#FF6600', 'right');
     text(String(G.levelNum), W - 16, 28, 10, '#fff', 'right');
 
     const by = H - 14;
@@ -724,12 +729,12 @@
     drawHUD();
 
     const touch = document.body.classList.contains('touch');
-    if (G.state === 'ready') overlay([[`LEVEL ${G.levelNum}`, 12, '#ffcc33'], ['READY!', 14, '#fff']]);
-    else if (G.state === 'clear') overlay([['SUBS SERVED!', 14, '#ffcc33'], [`LEVEL ${G.levelNum} CLEAR`, 10, '#fff']]);
-    else if (G.state === 'paused') overlay([['PAUSED', 14, '#ffcc33'], [touch ? 'TAP TO RESUME' : 'PRESS P TO RESUME', 8, '#fff']]);
+    if (G.state === 'ready') overlay([[`LEVEL ${G.levelNum}`, 12, '#F6E300'], ['READY!', 14, '#fff']]);
+    else if (G.state === 'clear') overlay([['SUBS SERVED!', 14, '#F6E300'], [`LEVEL ${G.levelNum} CLEAR`, 10, '#fff']]);
+    else if (G.state === 'paused') overlay([['PAUSED', 14, '#F6E300'], [touch ? 'TAP TO RESUME' : 'PRESS P TO RESUME', 8, '#fff']]);
     else if (G.state === 'gameover') {
-      const l = [['GAME OVER', 16, '#ff4d4d'], [`SCORE ${G.score}`, 10, '#fff']];
-      if (G.timer <= 0) l.push([touch ? 'TAP TO CONTINUE' : 'PRESS ENTER', 8, '#ffcc33']);
+      const l = [['GAME OVER', 16, '#FF6600'], [`SCORE ${G.score}`, 10, '#fff']];
+      if (G.timer <= 0) l.push([touch ? 'TAP TO CONTINUE' : 'PRESS ENTER', 8, '#F6E300']);
       overlay(l);
     }
   }
@@ -742,34 +747,34 @@
       const w = img.width * s, h = img.height * s;
       ctx.drawImage(img, (W - w) / 2, 50, w, h);
     } else {
-      text(CFG.title.text.toUpperCase(), W / 2, 140, 22, '#ffcc33');
+      text(CFG.title.text.toUpperCase(), W / 2, 140, 22, '#F6E300');
     }
 
     const touch = document.body.classList.contains('touch');
     if (Math.floor(G.t * 2) % 2 === 0) text(touch ? 'TAP TO START' : 'PRESS ENTER', W / 2, 310, 12, '#fff');
 
-    text('- VILLAINS -', W / 2, 360, 8, '#ff4d4d');
+    text('- VILLAINS -', W / 2, 360, 8, '#FF6600');
     VILLAIN_ORDER.forEach((k, i) => {
       const x = W / 2 + (i - 1) * 130;
       drawSprite(sprites.villains[k], CFG.villains[k], x, 425, { size: 48, bob: Math.floor(G.t * 4 + i) % 2 ? -2 : 0 });
       text(CFG.villains[k].name.toUpperCase(), x, 442, 7, '#fff');
     });
 
-    text(`HI-SCORE ${String(G.hi).padStart(6, '0')}`, W / 2, 478, 8, '#ffcc33');
+    text(`HI-SCORE ${String(G.hi).padStart(6, '0')}`, W / 2, 478, 8, '#F6E300');
     if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 506, 6, '#888');
   }
 
   function drawSelect() {
-    text('CHOOSE YOUR PLAYER', W / 2, 60, 14, '#ffcc33');
+    text('CHOOSE YOUR PLAYER', W / 2, 60, 14, '#F6E300');
     selectTiles().forEach((t, i) => {
       const sel = i === G.charIndex, def = CFG.characters[i];
-      roundRect(t.x - 3, t.y - 3, t.w + 6, t.h + 6, 10, sel ? '#ffcc33' : '#2a2f55');
-      roundRect(t.x, t.y, t.w, t.h, 8, sel ? '#262b52' : '#151933');
+      roundRect(t.x - 3, t.y - 3, t.w + 6, t.h + 6, 10, sel ? '#F6E300' : '#2a2f55');
+      roundRect(t.x, t.y, t.w, t.h, 8, sel ? '#5c94fc' : '#151933');
       const bob = sel && Math.floor(G.t * 4) % 2 ? -3 : 0;
       drawSprite(sprites.characters[i], def, t.x + t.w / 2, t.y + 88, { size: 72, bob });
       const words = def.name.toUpperCase().split(' ');
       const lines = words.length > 1 ? [words[0], words.slice(1).join(' ')] : words;
-      lines.forEach((ln, j) => text(ln, t.x + t.w / 2, t.y + 100 + j * 11 - (lines.length - 1) * 2, 7, sel ? '#fff' : '#aaa'));
+      lines.forEach((ln, j) => text(ln, t.x + t.w / 2, t.y + 100 + j * 11 - (lines.length - 1) * 2, 7, sel ? '#F6E300' : '#aaa'));
     });
     const b = START_BTN;
     roundRect(b.x, b.y, b.w, b.h, 10, Math.floor(G.t * 3) % 2 ? '#F6E300' : '#FF6600');
