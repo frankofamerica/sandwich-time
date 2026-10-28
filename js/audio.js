@@ -54,6 +54,7 @@ window.Sfx = (() => {
     empty:  () => tone(110, 0.12, { vol: 0.15 }),
     squash: () => tone(320, 0.25, { type: 'sawtooth', slide: 60, vol: 0.2 }),
     bonus:  () => seq([880, 1175, 1568], 0.06, { vol: 0.15 }),
+    bonusAppear: () => seq([1568, 1319, 1568, 1319, 1976], 0.07, { vol: 0.13, type: 'triangle' }),
     select: () => tone(900, 0.05, { vol: 0.12 }),
     start:  () => seq([523, 659, 784, 1047, 784, 1047], 0.11, { vol: 0.15 }),
     die:    () => seq([660, 560, 470, 390, 310, 220], 0.14, { vol: 0.15 }),

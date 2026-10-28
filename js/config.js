@@ -27,7 +27,10 @@ window.GAME_CONFIG = {
     cupcake: { name: 'Cupcake',  sprite: 'assets/villains/cupcake.png', frames: 1, color: '#ff8fc7', speed: 0.90, smart: 0.90 },
   },
 
-  spriteSize: 32,        // on-screen size (game pixels) of characters/villains
+  // Bonus item (+1 pepper and points). Drawn bottom-center on the floor.
+  bonus: { name: 'Pickle', sprite: 'assets/bonus/pickle.png', size: 24 },
+
+  spriteSize: 32,       // on-screen size (game pixels) of characters/villains
   playerSpeed: 78,       // pixels per second
   enemySpeed: 52,        // base villain pixels per second (scaled by level)
   startingLives: 3,

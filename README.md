@@ -39,6 +39,7 @@ paths and names in **`js/config.js`**.
 | `assets/villains/soda-can.png` | Soda Can villain |
 | `assets/villains/onion.png` | Onion villain |
 | `assets/villains/cupcake.png` | Cupcake villain |
+| `assets/bonus/pickle.png` | Pickle bonus item (+1 pepper). Square canvas, sits bottom-center on the floor; on-screen size is `bonus.size` in `js/config.js` |
 
 **Sprite guidelines (characters and villains)**
 - Transparent background, **square** canvas. 128×128 works well; any size scales.

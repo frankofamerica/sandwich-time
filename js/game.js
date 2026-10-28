@@ -22,7 +22,7 @@
   };
 
   // ------------------------------------------------------------ assets
-  const sprites = { characters: [], villains: {}, title: null };
+  const sprites = { characters: [], villains: {}, title: null, bonus: null };
   const loadImage = src => new Promise(resolve => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -34,6 +34,7 @@
     for (const key of Object.keys(CFG.villains))
       jobs.push(loadImage(CFG.villains[key].sprite).then(img => { sprites.villains[key] = img; }));
     jobs.push(loadImage(CFG.title.image).then(img => { sprites.title = img; }));
+    jobs.push(loadImage(CFG.bonus.sprite).then(img => { sprites.bonus = img; }));
     return Promise.all(jobs);
   }
 
@@ -238,8 +239,10 @@
     addScore(50);
     Sfx.land();
     G.dropCount++;
-    if ([5, 12, 20].includes(G.dropCount) && !G.bonus)
+    if ([5, 12, 20].includes(G.dropCount) && !G.bonus) {
       G.bonus = { x: G.level.start.x, y: G.level.start.y, t: 9 };
+      Sfx.bonusAppear();
+    }
     let pts = 500;
     for (const e of ing.riders) {
       if (e.state === 'riding' && e.ride === ing) { killEnemy(e, pts); pts *= 2; }
@@ -635,7 +638,14 @@
 
   function drawBonus(b) {
     if (b.t < 2 && Math.floor(G.t * 8) % 2) return;
-    // a pickle
+    const img = sprites.bonus;
+    if (img) {
+      const sc = CFG.bonus.size / Math.max(img.width, img.height);
+      const dw = img.width * sc, dh = img.height * sc;
+      ctx.drawImage(img, b.x - dw / 2, b.y - dh, dw, dh);
+      return;
+    }
+    // fallback if the PNG is missing: a pickle
     ctx.save();
     ctx.translate(b.x, b.y - 10);
     ctx.rotate(-0.4);

@@ -238,6 +238,32 @@ def make_title():
     return cv
 
 
+PICKLE = [
+    "................",
+    "................",
+    "................",
+    "...........KKK..",
+    ".........KKGGGK.",
+    ".......KKGGgGGK.",
+    ".....KKGGgGGGGK.",
+    "....KGGGGGGgGK..",
+    "...KGGgGGGGGGK..",
+    "..KGGGGGGgGGK...",
+    ".KGGGgGGGGGK....",
+    ".KGGGGGGGKK.....",
+    ".KGgGGGKK.......",
+    "..KKKKK.........",
+    "................",
+    "................",
+]
+
+
+def make_pickle():
+    cv = Canvas(16, 16)
+    cv.art(PICKLE, {"K": hex_rgba("#1f3d12"), "G": hex_rgba("#4c9a2a"), "g": hex_rgba("#86c94f")})
+    return cv
+
+
 def main():
     base = {"K": hex_rgba("#111111"), "W": hex_rgba("#ffffff")}
 
@@ -266,6 +292,9 @@ def main():
         cv.scaled(8).save(os.path.join(ROOT, "villains", f"{name}.png"))
 
     make_title().scaled(4).save(os.path.join(ROOT, "title", "title.png"))
+
+    os.makedirs(os.path.join(ROOT, "bonus"), exist_ok=True)
+    make_pickle().scaled(8).save(os.path.join(ROOT, "bonus", "pickle.png"))
 
 
 if __name__ == "__main__":
