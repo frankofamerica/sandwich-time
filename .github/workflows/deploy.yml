@@ -1,0 +1,27 @@
+name: Deploy to Bluehost
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # adds a manual "Run workflow" button
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: FTP deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps          # use "ftp" if FTPS fails
+          local-dir: ./           # what to upload (must end in /)
+          server-dir: myfolder/   # where it goes on Bluehost (must end in /)
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            README.md
