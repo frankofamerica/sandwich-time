@@ -27,8 +27,12 @@ window.GAME_CONFIG = {
     cupcake: { name: 'Cupcake',  sprite: 'assets/villains/cupcake.png', frames: 1, color: '#ff8fc7', speed: 0.90, smart: 0.90 },
   },
 
-  // Bonus item (+1 pepper and points). Drawn bottom-center on the floor.
-  bonus: { name: 'Coffee', sprite: 'assets/bonus/coffee.png', size: 24 },
+  // Bonus items. Each appears at the player's start spot after the listed
+  // ingredient drops in a level. Drawn bottom-center on the floor.
+  bonuses: {
+    tape:   { name: 'Tape Measure', sprite: 'assets/bonus/tape-measure.png', size: 24, points: 500,  pepper: 1, drops: [5, 20], color: '#ff7a1a' },
+    coffee: { name: 'Coffee',       sprite: 'assets/bonus/coffee.png',       size: 24, points: 1000, pepper: 1, drops: [12],    color: '#6f3b1c' },
+  },
 
   spriteSize: 32,       // on-screen size (game pixels) of characters/villains
   playerSpeed: 78,       // pixels per second

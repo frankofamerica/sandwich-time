@@ -39,7 +39,11 @@ paths and names in **`js/config.js`**.
 | `assets/villains/soda-can.png` | Soda Can villain |
 | `assets/villains/onion.png` | Onion villain |
 | `assets/villains/cupcake.png` | Cupcake villain |
-| `assets/bonus/coffee.png` | Coffee cup bonus item (+1 pepper). Square canvas, sits bottom-center on the floor; on-screen size is `bonus.size` in `js/config.js` |
+| `assets/bonus/tape-measure.png` | Tape Measure bonus item (500 points, +1 pepper) |
+| `assets/bonus/coffee.png` | Coffee bonus item (1,000 points, +1 pepper) |
+
+Bonus items use a square canvas and sit bottom-center on the floor. Their size, points,
+pepper and which ingredient drops spawn them are set under `bonuses` in `js/config.js`.
 
 **Sprite guidelines (characters and villains)**
 - Transparent background, **square** canvas. 128×128 works well; any size scales.
@@ -66,7 +70,7 @@ To regenerate the original placeholder art (this overwrites the PNGs):
 - A falling layer knocks the layer below it down too, so chain reactions are possible.
 - Villains standing on a layer when it drops ride it down for big points (500, 1000, 2000…).
   Villains underneath a falling layer get squashed.
-- Pepper stuns villains for a few seconds. Grab the **coffee** bonus for +1 pepper.
+- Pepper stuns villains for a few seconds. Grab the **tape measure** (500) or **coffee** (1,000) bonus for points and +1 pepper.
 - There are 4 stage layouts. They cycle, and villains get faster and more numerous each level.
 - Extra life every 20,000 points. Your high score is saved in the browser.
 

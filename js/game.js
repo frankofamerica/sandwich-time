@@ -22,7 +22,7 @@
   };
 
   // ------------------------------------------------------------ assets
-  const sprites = { characters: [], villains: {}, title: null, bonus: null };
+  const sprites = { characters: [], villains: {}, title: null, bonuses: {} };
   const loadImage = src => new Promise(resolve => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -34,7 +34,8 @@
     for (const key of Object.keys(CFG.villains))
       jobs.push(loadImage(CFG.villains[key].sprite).then(img => { sprites.villains[key] = img; }));
     jobs.push(loadImage(CFG.title.image).then(img => { sprites.title = img; }));
-    jobs.push(loadImage(CFG.bonus.sprite).then(img => { sprites.bonus = img; }));
+    for (const key of Object.keys(CFG.bonuses))
+      jobs.push(loadImage(CFG.bonuses[key].sprite).then(img => { sprites.bonuses[key] = img; }));
     return Promise.all(jobs);
   }
 
@@ -232,6 +233,18 @@
     Sfx.drop();
   }
 
+  // Random floor tile for a bonus: not under a sandwich stack, and not right next to the player.
+  function bonusSpot() {
+    const L = G.level, p = G.player, spots = [];
+    const inSub = c => L.subs.some(s => c >= s.c0 && c < s.c0 + SUB_W);
+    for (const [f, c0, c1] of L.floors)
+      for (let c = c0; c <= c1; c++) {
+        const x = c * T + T / 2, y = FLOOR_Y[f];
+        if (!inSub(c) && (y !== p.y || Math.abs(x - p.x) > 4 * T)) spots.push({ x, y });
+      }
+    return spots.length ? spots[Math.floor(Math.random() * spots.length)] : { x: L.start.x, y: L.start.y };
+  }
+
   function land(ing, plated) {
     ing.state = plated ? 'plated' : 'rest';
     ing.pressed.fill(false);
@@ -239,8 +252,9 @@
     addScore(50);
     Sfx.land();
     G.dropCount++;
-    if ([5, 12, 20].includes(G.dropCount) && !G.bonus) {
-      G.bonus = { x: G.level.start.x, y: G.level.start.y, t: 9 };
+    const bonusType = Object.keys(CFG.bonuses).find(k => CFG.bonuses[k].drops.includes(G.dropCount));
+    if (bonusType && !G.bonus) {
+      G.bonus = { type: bonusType, ...bonusSpot(), t: 9 };
       Sfx.bonusAppear();
     }
     let pts = 500;
@@ -373,10 +387,10 @@
       G.bonus.t -= dt;
       if (G.bonus.t <= 0) G.bonus = null;
       else if (Math.abs(G.bonus.x - p.x) < 14 && Math.abs(G.bonus.y - p.y) < 8) {
-        const pts = 500 * Math.min(G.levelNum, 4);
-        addScore(pts);
-        G.pepper++;
-        popup(G.bonus.x, G.bonus.y - 30, pts + ' +PEPPER', '#7CFC00');
+        const def = CFG.bonuses[G.bonus.type];
+        addScore(def.points);
+        G.pepper += def.pepper;
+        popup(G.bonus.x, G.bonus.y - 30, def.points + ' +PEPPER', '#F6E300');
         Sfx.bonus();
         G.bonus = null;
       }
@@ -638,28 +652,11 @@
 
   function drawBonus(b) {
     if (b.t < 2 && Math.floor(G.t * 8) % 2) return;
-    const img = sprites.bonus;
-    if (img) {
-      const sc = CFG.bonus.size / Math.max(img.width, img.height);
-      const dw = img.width * sc, dh = img.height * sc;
-      ctx.drawImage(img, b.x - dw / 2, b.y - dh, dw, dh);
-      return;
-    }
-    // fallback if the PNG is missing: a cup of coffee
-    const x = b.x - 8, y = b.y;
-    ctx.fillStyle = '#2b1a10';
-    ctx.fillRect(x - 2, y - 3, 20, 3);                 // saucer
-    ctx.fillStyle = '#f5f1e8';
-    ctx.fillRect(x, y - 15, 13, 12);                   // cup
-    ctx.strokeStyle = '#f5f1e8'; ctx.lineWidth = 2;
-    ctx.strokeRect(x + 13, y - 12, 4, 5);              // handle
-    ctx.fillStyle = '#6f3b1c';
-    ctx.fillRect(x + 1, y - 15, 11, 2);                // coffee
-    ctx.fillStyle = '#c1121f';
-    ctx.fillRect(x, y - 10, 13, 2);                    // stripe
-    ctx.fillStyle = '#d9d9d9';                         // steam
-    const s = Math.floor(G.t * 4) % 2;
-    ctx.fillRect(x + 3 + s, y - 20, 1, 3); ctx.fillRect(x + 8 - s, y - 21, 1, 3);
+    const def = CFG.bonuses[b.type];
+    // falls back to a colored circle with the first letter if the PNG is missing
+    // gentle float: rises up to 3px off the floor and back, about once a second
+    const bob = -Math.round(1.5 * (1 + Math.sin(G.t * 5)));
+    drawSprite(sprites.bonuses[b.type], def, b.x, b.y, { size: def.size, bob });
   }
 
   function drawEnemy(e) {
