@@ -789,7 +789,7 @@
       const bob = sel && Math.floor(G.t * 4) % 2 ? -3 : 0;
       drawSprite(sprites.characters[i], def, t.x + t.w / 2, t.y + 88, { size: 72, bob });
       const words = def.name.toUpperCase().split(' ');
-      const lines = words.length > 1 ? [words[0], words.slice(1).join(' ')] : words;
+      const lines = words.length > 2 ? [words[0], words.slice(1).join(' ')] : [words.join(' ')];
       lines.forEach((ln, j) => text(ln, t.x + t.w / 2, t.y + 100 + j * 11 - (lines.length - 1) * 2, 7, sel ? '#F6E300' : '#aaa'));
     });
     const b = START_BTN;
