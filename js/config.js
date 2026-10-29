@@ -34,7 +34,19 @@ window.GAME_CONFIG = {
     coffee: { name: 'Coffee',       sprite: 'assets/bonus/coffee.png',       size: 24, points: 1000, pepper: 1, drops: [12],    color: '#6f3b1c' },
   },
 
-  spriteSize: 32,       // on-screen size (game pixels) of characters/villains
+  // Online high scores (Firebase Firestore). Paste your web app's config from
+  // Firebase console → Project settings → Your apps. Leave apiKey empty to
+  // turn the online leaderboard off. See README.md for setup.
+  firebase: {
+    apiKey: 'AIzaSyBTYc9o54fEL613Dp3sIygC8662C3nGWl8',
+    authDomain: 'sandwich-time-game.firebaseapp.com',
+    projectId: 'sandwich-time-game',
+    appId: '1:293950462446:web:bfca1e0a3239ff058856ff',
+  },
+  leaderboardSize: 10,
+  nameMaxLength: 20,
+
+  spriteSize: 32,      // on-screen size (game pixels) of characters/villains
   playerSpeed: 78,       // pixels per second
   enemySpeed: 52,        // base villain pixels per second (scaled by level)
   startingLives: 3,

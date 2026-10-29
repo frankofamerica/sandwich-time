@@ -30,7 +30,32 @@
     </div>
   </div>
 
+  <dialog id="name-dialog" class="st-dialog" aria-labelledby="name-title">
+    <form id="name-form">
+      <h2 id="name-title">NEW HIGH SCORE!</h2>
+      <p class="place" id="name-place"></p>
+      <p class="place-sub" id="name-place-sub"></p>
+      <p class="big" id="name-score"></p>
+      <label for="name-input">ENTER YOUR NAME</label>
+      <input id="name-input" type="text" maxlength="20" autocomplete="nickname" autocapitalize="characters"
+             autocorrect="off" spellcheck="false" enterkeyhint="done">
+      <p class="msg" id="name-msg" role="status"></p>
+      <div class="row">
+        <button type="button" id="name-skip" class="secondary">SKIP</button>
+        <button type="submit" id="name-submit">SUBMIT</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="scores-dialog" class="st-dialog" aria-labelledby="scores-title">
+    <h2 id="scores-title">TOP 10</h2>
+    <ol id="scores-list"></ol>
+    <p class="msg" id="scores-msg" role="status"></p>
+    <div class="row"><button type="button" id="scores-close">CLOSE</button></div>
+  </dialog>
+
   <script src="js/config.js"></script>
+  <script src="js/scores.js"></script>
   <script src="js/level.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/input.js"></script>

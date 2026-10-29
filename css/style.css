@@ -126,3 +126,58 @@ button {
   font-size: 10px;
 }
 .small-btns button.down { background: #3d4480; }
+
+/* ---------- high-score dialogs ---------- */
+.st-dialog {
+  width: min(360px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 20px 18px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #151933;
+  color: #fff;
+  box-shadow: 0 0 0 3px #F6E300, 0 10px 40px rgba(0, 0, 0, 0.7);
+  font-family: inherit;
+  text-align: center;
+}
+.st-dialog::backdrop { background: rgba(5, 7, 20, 0.75); }
+.st-dialog h2 { margin: 0 0 12px; font-size: 16px; font-weight: normal; color: #F6E300; }
+.st-dialog .big { margin: 0 0 16px; font-size: 20px; }
+.st-dialog .place { margin: 0 0 4px; font-size: 22px; color: #FF6600; }
+.st-dialog .place-sub { margin: 0 0 14px; font-size: 9px; color: #aaa; }
+.st-dialog label { display: block; margin-bottom: 8px; font-size: 10px; color: #aaa; }
+.st-dialog input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 2px solid #2f3566;
+  border-radius: 6px;
+  background: #07080f;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px; /* 16px+ stops iOS zooming in on focus */
+  text-transform: uppercase;
+  text-align: center;
+  user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+}
+.st-dialog input:focus { border-color: #F6E300; }
+.st-dialog .msg { min-height: 14px; margin: 10px 0 0; font-size: 9px; color: #FF6600; }
+.st-dialog .row { display: flex; gap: 12px; justify-content: center; margin-top: 14px; }
+.st-dialog button {
+  min-width: 110px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #FF6600;
+  font-size: 11px;
+  touch-action: manipulation;
+}
+.st-dialog button.secondary { background: #2a2f55; }
+.st-dialog button:disabled { opacity: 0.5; }
+#scores-list { margin: 0; padding: 0; list-style: none; font-size: 11px; }
+#scores-list li { display: flex; gap: 10px; padding: 7px 4px; border-bottom: 1px solid #23284a; }
+#scores-list li.me { color: #F6E300; }
+#scores-list .rank { width: 22px; text-align: right; color: #888; }
+#scores-list li.me .rank { color: inherit; }
+#scores-list .name { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

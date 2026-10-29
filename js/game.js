@@ -20,6 +20,7 @@
     },
     set(k, v) { try { localStorage.setItem('sandwichtime.' + k, JSON.stringify(v)); } catch (e) { /* ignore */ } },
   };
+  try { localStorage.removeItem('sandwichtime.hi'); } catch (e) { /* ignore */ } // hi-score now comes from the leaderboard
 
   // ------------------------------------------------------------ assets
   const sprites = { characters: [], villains: {}, title: null, bonuses: {} };
@@ -42,10 +43,12 @@
   // ------------------------------------------------------------ state
   const G = {
     state: 'loading', t: 0, timer: 0, prevState: null,
-    score: 0, hi: store.get('hi', 0), lives: 0, pepper: 0, levelNum: 1, nextLifeAt: 0,
+    score: 0, lives: 0, pepper: 0, levelNum: 1, nextLifeAt: 0,
     charIndex: Math.min(store.get('char', 0), CFG.characters.length - 1), 
     level: null, subs: [], ingredients: [], enemies: [], player: null,
     cloud: null, popups: [], bonus: null, dropCount: 0,
+    modal: false,      // a high-score dialog is open; the game ignores input
+    place: null,       // game over: null while checking the leaderboard, then 1..10 or 0 (didn't place)
   };
   Sfx.setMuted(store.get('muted', false));
 
@@ -118,7 +121,6 @@
 
   function addScore(n) {
     G.score += n;
-    if (G.score > G.hi) { G.hi = G.score; store.set('hi', G.hi); }
     if (G.score >= G.nextLifeAt) {
       G.nextLifeAt += CFG.extraLifeAt;
       G.lives++;
@@ -408,11 +410,14 @@
   }
 
   function handleEvents() {
+    if (G.modal) { Input.drain(); return; }
     for (const ev of Input.drain()) {
       if (ev.type === 'mute') { Sfx.setMuted(!Sfx.muted); store.set('muted', Sfx.muted); continue; }
       switch (G.state) {
         case 'title':
-          if (ev.type === 'confirm' || ev.type === 'pepper' || ev.type === 'tap') { G.state = 'select'; Sfx.select(); }
+          if (ev.type === 'tap' && window.Scores.enabled && rectsHit({ x: ev.x, y: ev.y, w: 1, h: 1 }, HISCORE_BTN))
+            openModal(() => window.Scores.showBoard());
+          else if (ev.type === 'confirm' || ev.type === 'pepper' || ev.type === 'tap') { G.state = 'select'; Sfx.select(); }
           break;
         case 'select': handleSelectEvent(ev); break;
         case 'playing':
@@ -426,7 +431,7 @@
           if (ev.type === 'pause' || ev.type === 'confirm' || ev.type === 'tap') G.state = G.prevState;
           break;
         case 'gameover':
-          if (G.timer <= 0 && (ev.type === 'confirm' || ev.type === 'pepper' || ev.type === 'tap')) G.state = 'title';
+          if (G.timer <= 0 && G.place === 0 && (ev.type === 'confirm' || ev.type === 'pepper' || ev.type === 'tap')) G.state = 'title';
           break;
       }
     }
@@ -450,7 +455,11 @@
         for (const ing of G.ingredients) updateIngredient(ing, dt);
         G.player.deathT += dt;
         if (G.player.deathT > 2.2) {
-          if (G.lives <= 0) { G.state = 'gameover'; G.timer = 1.5; }
+          if (G.lives <= 0) {
+            G.state = 'gameover'; G.timer = 1.5;
+            G.place = null;
+            window.Scores.placeFor(G.score).then(n => { G.place = n; });
+          }
           else { resetActors(); G.state = 'ready'; G.timer = 1.5; }
         }
         break;
@@ -460,8 +469,21 @@
         break;
       case 'gameover':
         G.timer -= dt;
+        if (G.timer <= 0 && G.place && !G.modal) {
+          const place = G.place;
+          G.place = 0;
+          openModal(() => window.Scores.promptName(G.score, place)
+            .then(id => id && window.Scores.showBoard(id))
+            .then(() => { G.state = 'title'; }));
+        }
         break;
     }
+  }
+
+  function openModal(show) {
+    G.modal = true;
+    Sfx.select();
+    show().finally(() => { G.modal = false; Input.drain(); });
   }
 
   // ------------------------------------------------------------ character select
@@ -712,7 +734,7 @@
     text('SCORE', 16, 14, 8, '#FF6600', 'left');
     text(String(G.score).padStart(6, '0'), 16, 28, 10, '#fff', 'left');
     text('HI-SCORE', W / 2, 14, 8, '#FF6600');
-    text(String(G.hi).padStart(6, '0'), W / 2, 28, 10, '#fff');
+    text(String(Math.max(window.Scores.best, G.score)).padStart(6, '0'), W / 2, 28, 10, '#fff');
     text('LEVEL', W - 16, 14, 8, '#FF6600', 'right');
     text(String(G.levelNum), W - 16, 28, 10, '#fff', 'right');
 
@@ -747,12 +769,14 @@
     else if (G.state === 'paused') overlay([['PAUSED', 14, '#F6E300'], [touch ? 'TAP TO RESUME' : 'PRESS P TO RESUME', 8, '#fff']]);
     else if (G.state === 'gameover') {
       const l = [['GAME OVER', 16, '#FF6600'], [`SCORE ${G.score}`, 10, '#fff']];
-      if (G.timer <= 0) l.push([touch ? 'TAP TO CONTINUE' : 'PRESS ENTER', 8, '#F6E300']);
+      if (G.timer <= 0 && G.place === 0 && !G.modal) l.push([touch ? 'TAP TO CONTINUE' : 'PRESS ENTER', 8, '#F6E300']);
       overlay(l);
     }
   }
 
   // ------------------------------------------------------------ screens
+  const HISCORE_BTN = { x: W / 2 - 120, y: 464, w: 240, h: 36 }; // title-screen tap target for the top 10
+
   function drawTitle() {
     const img = sprites.title;
     if (img) {
@@ -773,7 +797,8 @@
       text(CFG.villains[k].name.toUpperCase(), x, 442, 7, '#fff');
     });
 
-    text(`HI-SCORE ${String(G.hi).padStart(6, '0')}`, W / 2, 478, 8, '#F6E300');
+    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, 478, 8, '#F6E300');
+    if (window.Scores.enabled) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, 491, 6, '#F6E300');
     if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 506, 6, '#888');
   }
 

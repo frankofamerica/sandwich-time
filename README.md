@@ -72,7 +72,26 @@ To regenerate the original placeholder art (this overwrites the PNGs):
   Villains underneath a falling layer get squashed.
 - Pepper stuns villains for a few seconds. Grab the **tape measure** (500) or **coffee** (1,000) bonus for points and +1 pepper.
 - There are 4 stage layouts. They cycle, and villains get faster and more numerous each level.
-- Extra life every 20,000 points. Your high score is saved in the browser.
+- Extra life every 20,000 points. The HI-SCORE shown is the #1 score on the online leaderboard.
+- If your final score makes the online top 10, you're asked for your name (up to 20
+  characters). Tap/click the hi-score on the title screen to see the top 10.
+
+## Online high scores (Firebase)
+
+The top-10 leaderboard uses Firebase Firestore. It's off until you add your config;
+the game works normally without it.
+
+1. In the [Firebase console](https://console.firebase.google.com/), create a project.
+2. **Build → Firestore Database → Create database** (production mode, any region).
+3. **Firestore → Rules**: replace the rules with the contents of `firestore.rules`
+   and click **Publish**. These allow reading the table and adding valid entries only.
+4. **Project settings → Your apps → Add app → Web (`</>`)**. Copy the `apiKey`,
+   `authDomain`, `projectId` and `appId` into `firebase` in `js/config.js`.
+
+Scores are stored in the `highscores` collection as `{ name, score, createdAt }`.
+The Firebase web API key is meant to be public; the rules are what protect the data.
+Scores are submitted from the browser, so a determined player could post a fake score.
+Delete bad entries from the Firebase console.
 
 ## Project layout
 
@@ -84,6 +103,8 @@ js/level.js         stage layouts (floors, ladders, ingredient positions)
 js/game.js          game logic and rendering
 js/input.js         keyboard + touch input
 js/audio.js         synthesized sound effects
+js/scores.js        online top-10 leaderboard (Firebase) + name-entry dialog
+firestore.rules     Firestore security rules for the leaderboard
 assets/             replaceable PNG art
 tools/              placeholder art generator
 ```

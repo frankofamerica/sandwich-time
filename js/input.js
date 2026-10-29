@@ -10,6 +10,7 @@ window.Input = (() => {
   const events = [];
 
   window.addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('dialog')) return; // typing a name, not playing
     window.Sfx.unlock();
     const d = KEYMAP[e.code];
     if (d) {
