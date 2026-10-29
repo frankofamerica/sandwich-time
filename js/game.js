@@ -798,13 +798,17 @@
     });
 
     const hb = HISCORE_BTN; // border doubles as the visible tap target for the top 10
+    ctx.fillStyle = '#091140';
     ctx.strokeStyle = '#F6E300';
     ctx.lineWidth = 2;
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(hb.x, hb.y, hb.w, hb.h, 6); else ctx.rect(hb.x, hb.y, hb.w, hb.h);
+    ctx.fill();
     ctx.stroke();
-    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, 470, 8, '#F6E300');
-    if (window.Scores.enabled) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, 483, 6, '#F6E300');
+    // center the one or two lines of text vertically in the box
+    const cy = hb.y + hb.h / 2, two = window.Scores.enabled;
+    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, two ? cy - 6 : cy, 8, '#F6E300');
+    if (two) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, cy + 7, 6, '#F6E300');
     if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 516, 6, '#F9FAFB');
   }
 
