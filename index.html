@@ -1,17 +1,44 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#07080f">
   <title>Sandwich Time</title>
+  <meta name="description" content="Sandwich Time is a retro-style arcade game where you dodge villains and collect ingredients to make the ultimate sandwich.">
+
+  <!-- Favicon (browser tab) -->
+  <link rel="icon" href="https://franchisecartoons.com/sandwich-time/images/favicon.ico" sizes="32x32">
+  <link rel="icon" href="https://franchisecartoons.com/sandwich-time/images/favicon.svg" type="image/svg+xml">
+
+  <!-- App icon (iOS "Add to Home Screen"): 180x180 PNG, no transparency -->
+  <link rel="apple-touch-icon" href="https://franchisecartoons.com/sandwich-time/images/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Sandwich Time">
+
+  <!-- Social share preview (Open Graph: iMessage, Slack, Facebook, LinkedIn...).
+       og:image and og:url must be full https:// URLs. Image: 1200x630 PNG or JPG. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sandwich Time">
+  <meta property="og:title" content="Sandwich Time">
+  <meta property="og:description" content="Sandwich Time is a retro-style arcade game where you dodge villains and collect ingredients to make the ultimate sandwich.">
+  <meta property="og:url" content="https://franchisecartoons.com/sandwich-time/">
+  <meta property="og:image" content="https://franchisecartoons.com/sandwich-time/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sandwich Time share image">
+
+  <!-- X/Twitter reuses og:title, og:description and og:image -->
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <div id="app">
     <div id="left-ctrl">
@@ -41,7 +68,7 @@
       <p class="big" id="name-score"></p>
       <label for="name-input">ENTER YOUR NAME</label>
       <input id="name-input" type="text" maxlength="20" autocomplete="nickname" autocapitalize="characters"
-             autocorrect="off" spellcheck="false" enterkeyhint="done">
+        autocorrect="off" spellcheck="false" enterkeyhint="done">
       <p class="msg" id="name-msg" role="status"></p>
       <div class="row">
         <button type="button" id="name-skip" class="secondary">SKIP</button>
@@ -64,4 +91,5 @@
   <script src="js/input.js"></script>
   <script src="js/game.js"></script>
 </body>
+
 </html>
