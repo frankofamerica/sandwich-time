@@ -660,7 +660,7 @@
     }
     for (const [f, c0, c1] of lvl.floors) {
       const y = FLOOR_Y[f], x = c0 * T, w = (c1 - c0 + 1) * T;
-      ctx.fillStyle = '#2f6fd6'; ctx.fillRect(x, y, w, 5);
+      ctx.fillStyle = '#091140'; ctx.fillRect(x, y, w, 5);
       ctx.fillStyle = '#9cc6ff'; ctx.fillRect(x, y, w, 1);
       ctx.fillStyle = '#163a7a'; ctx.fillRect(x, y + 5, w, 1);
     }
@@ -668,7 +668,7 @@
       const x = s.c0 * T - 8, w = SUB_W * T + 16;
       roundRect(x, PLATE_Y, w, 7, 3, '#8b5a2b');
       ctx.fillStyle = '#c08a52'; ctx.fillRect(x + 3, PLATE_Y, w - 6, 2);
-      text('6 FT', s.c0 * T + SUB_W * T / 2, PLATE_Y + 16, 7, '#8a7a66');
+      text('6 FT', s.c0 * T + SUB_W * T / 2, PLATE_Y + 16, 7, '#F6E300');
     }
   }
 
@@ -731,11 +731,11 @@
   }
 
   function drawHUD() {
-    text('SCORE', 16, 14, 8, '#FF6600', 'left');
+    text('SCORE', 16, 14, 8, '#F6E300', 'left');
     text(String(G.score).padStart(6, '0'), 16, 28, 10, '#fff', 'left');
-    text('HI-SCORE', W / 2, 14, 8, '#FF6600');
+    text('HI-SCORE', W / 2, 14, 8, '#F6E300');
     text(String(Math.max(window.Scores.best, G.score)).padStart(6, '0'), W / 2, 28, 10, '#fff');
-    text('LEVEL', W - 16, 14, 8, '#FF6600', 'right');
+    text('LEVEL', W - 16, 14, 8, '#F6E300', 'right');
     text(String(G.levelNum), W - 16, 28, 10, '#fff', 'right');
 
     const by = H - 14;
@@ -775,7 +775,7 @@
   }
 
   // ------------------------------------------------------------ screens
-  const HISCORE_BTN = { x: W / 2 - 120, y: 464, w: 240, h: 36 }; // title-screen tap target for the top 10
+  const HISCORE_BTN = { x: W / 2 - 120, y: 456, w: 240, h: 36 }; // title-screen tap target for the top 10
 
   function drawTitle() {
     const img = sprites.title;
@@ -790,16 +790,22 @@
     const touch = document.body.classList.contains('touch');
     if (Math.floor(G.t * 2) % 2 === 0) text(touch ? 'TAP TO START' : 'PRESS ENTER', W / 2, 310, 12, '#fff');
 
-    text('- VILLAINS -', W / 2, 360, 8, '#FF6600');
+    text('- VILLAINS -', W / 2, 360, 8, '#F6E300');
     VILLAIN_ORDER.forEach((k, i) => {
       const x = W / 2 + (i - 1) * 130;
       drawSprite(sprites.villains[k], CFG.villains[k], x, 425, { size: 48, bob: Math.floor(G.t * 4 + i) % 2 ? -2 : 0 });
       text(CFG.villains[k].name.toUpperCase(), x, 442, 7, '#fff');
     });
 
-    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, 478, 8, '#F6E300');
-    if (window.Scores.enabled) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, 491, 6, '#F6E300');
-    if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 506, 6, '#888');
+    const hb = HISCORE_BTN; // border doubles as the visible tap target for the top 10
+    ctx.strokeStyle = '#F6E300';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(hb.x, hb.y, hb.w, hb.h, 6); else ctx.rect(hb.x, hb.y, hb.w, hb.h);
+    ctx.stroke();
+    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, 470, 8, '#F6E300');
+    if (window.Scores.enabled) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, 483, 6, '#F6E300');
+    if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 516, 6, '#F9FAFB');
   }
 
   function drawSelect() {
@@ -818,14 +824,14 @@
     roundRect(b.x, b.y, b.w, b.h, 10, Math.floor(G.t * 3) % 2 ? '#F6E300' : '#FF6600');
     text('START', W / 2, b.y + b.h / 2 + 1, 14, '#fff');
     const touch = document.body.classList.contains('touch');
-    text(touch ? 'TAP A CHEF, THEN START' : 'ARROWS TO CHOOSE, ENTER TO START', W / 2, 480, 7, '#888');
+    text(touch ? 'TAP A CHEF, THEN START' : 'ARROWS TO CHOOSE, ENTER TO START', W / 2, 480, 7, '#F9FAFB');
   }
 
   function render() {
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.fillStyle = '#091140'; // CHANGE GAME BACKGROUND COLOR HERE
+    ctx.fillStyle = '#5c94fc'; // CHANGE GAME BACKGROUND COLOR HERE
     ctx.fillRect(0, 0, W, H);
     if (G.state === 'loading') text('LOADING...', W / 2, H / 2, 12, '#fff');
     else if (G.state === 'title') drawTitle();
