@@ -790,11 +790,11 @@
     const touch = document.body.classList.contains('touch');
     if (Math.floor(G.t * 2) % 2 === 0) text(touch ? 'TAP TO START' : 'PRESS ENTER', W / 2, 310, 12, '#fff');
 
-    text('- VILLAINS -', W / 2, 360, 8, '#F6E300');
+    text('- VILLAINS -', W / 2, 350, 8, '#F6E300');
     VILLAIN_ORDER.forEach((k, i) => {
       const x = W / 2 + (i - 1) * 130;
-      drawSprite(sprites.villains[k], CFG.villains[k], x, 425, { size: 48, bob: Math.floor(G.t * 4 + i) % 2 ? -2 : 0 });
-      text(CFG.villains[k].name.toUpperCase(), x, 442, 7, '#fff');
+      drawSprite(sprites.villains[k], CFG.villains[k], x, 415, { size: 48, bob: Math.floor(G.t * 4 + i) % 2 ? -2 : 0 });
+      text(CFG.villains[k].name.toUpperCase(), x, 432, 7, '#fff');
     });
 
     const hb = HISCORE_BTN; // border doubles as the visible tap target for the top 10
