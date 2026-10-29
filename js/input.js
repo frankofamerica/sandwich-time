@@ -58,32 +58,41 @@ window.Input = (() => {
       lastTouchEnd = now;
     }, { passive: false });
 
-    // D-pad: direction comes from where the thumb is relative to the pad
-    // center, so you can slide between directions without lifting.
+    // Joystick: direction comes from where the thumb is relative to the pad
+    // center, so you can slide between directions without lifting. The knob
+    // follows the thumb (up to the ring) and springs back on release.
     const pad = document.getElementById('dpad');
+    const knob = pad.querySelector('.knob');
     let padPointer = null;
     const updatePad = e => {
       const r = pad.getBoundingClientRect();
       const dx = e.clientX - (r.left + r.width / 2);
       const dy = e.clientY - (r.top + r.height / 2);
+      const dist = Math.hypot(dx, dy), maxR = r.width * 0.28;
+      const k = dist > maxR ? maxR / dist : 1;
+      knob.style.transform = `translate(${dx * k}px, ${dy * k}px)`;
       let d = null;
-      if (Math.hypot(dx, dy) > r.width * 0.12)
+      if (dist > r.width * 0.12)
         d = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'L' : 'R') : (dy < 0 ? 'U' : 'D');
       if (d && d !== padDir) events.push({ type: 'dir', dir: d });
       padDir = d;
       pad.dataset.dir = d || '';
     };
+    pad.dataset.dir = '';
     pad.addEventListener('pointerdown', e => {
       e.preventDefault();
       window.Sfx.unlock();
       padPointer = e.pointerId;
       pad.setPointerCapture(e.pointerId);
+      pad.classList.add('dragging');
       updatePad(e);
     });
     pad.addEventListener('pointermove', e => { if (e.pointerId === padPointer) updatePad(e); });
     const release = e => {
       if (e.pointerId !== padPointer) return;
       padPointer = null; padDir = null; pad.dataset.dir = '';
+      pad.classList.remove('dragging');
+      knob.style.transform = '';
     };
     pad.addEventListener('pointerup', release);
     pad.addEventListener('pointercancel', release);

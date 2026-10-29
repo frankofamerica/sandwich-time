@@ -75,31 +75,46 @@ body.touch #right-ctrl { grid-area: right; flex-direction: column; gap: 14px; }
   }
 }
 
+/* joystick: base + segmented ring + thumb knob (input.js moves the knob) */
 #dpad {
+  --stick-base: #161a33;
+  --stick-ring: #5a6199;
+  --stick-knob: #c9cdf0;
+  --stick-active: #F6E300;
   position: relative;
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: radial-gradient(circle, #252a4d 0%, #161a33 70%);
-  box-shadow: inset 0 0 0 3px #2f3566;
+  background: var(--stick-base);
   touch-action: none;
 }
-#dpad .arrow {
+#dpad .ring {
   position: absolute;
-  width: 0; height: 0;
-  border: 16px solid transparent;
-  opacity: 0.55;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--stick-ring);
+  stroke-width: 2.5;
+  transition: stroke 0.1s;
 }
-#dpad .up    { top: 10px;    left: 59px; border-bottom: 22px solid #fff; border-top-width: 0; }
-#dpad .down  { bottom: 10px; left: 59px; border-top: 22px solid #fff; border-bottom-width: 0; }
-#dpad .left  { left: 10px;   top: 59px;  border-right: 22px solid #fff; border-left-width: 0; }
-#dpad .right { right: 10px;  top: 59px;  border-left: 22px solid #fff; border-right-width: 0; }
-#dpad[data-dir="U"] .up, #dpad[data-dir="D"] .down,
-#dpad[data-dir="L"] .left, #dpad[data-dir="R"] .right { opacity: 1; border-color: transparent; }
-#dpad[data-dir="U"] .up    { border-bottom-color: #ffcc33; }
-#dpad[data-dir="D"] .down  { border-top-color: #ffcc33; }
-#dpad[data-dir="L"] .left  { border-right-color: #ffcc33; }
-#dpad[data-dir="R"] .right { border-left-color: #ffcc33; }
+#dpad .knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  background: var(--stick-knob);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+  transition: transform 0.12s ease-out, background 0.1s;
+  pointer-events: none;
+}
+#dpad.dragging .knob { transition: background 0.1s; }
+#dpad:not([data-dir=""]) .ring { stroke: var(--stick-active); }
+#dpad[data-dir="U"] .knob, #dpad[data-dir="D"] .knob,
+#dpad[data-dir="L"] .knob, #dpad[data-dir="R"] .knob { background: var(--stick-active); }
 
 button {
   font-family: inherit;
