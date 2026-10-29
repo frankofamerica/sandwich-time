@@ -181,3 +181,5 @@ button {
 #scores-list .rank { width: 22px; text-align: right; color: #888; }
 #scores-list li.me .rank { color: inherit; }
 #scores-list .name { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#scores-list li { align-items: center; }
+#scores-list .chef { width: 22px; height: 22px; flex: none; object-fit: contain; }

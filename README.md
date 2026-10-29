@@ -88,7 +88,7 @@ the game works normally without it.
 4. **Project settings → Your apps → Add app → Web (`</>`)**. Copy the `apiKey`,
    `authDomain`, `projectId` and `appId` into `firebase` in `js/config.js`.
 
-Scores are stored in the `highscores` collection as `{ name, score, createdAt }`.
+Scores are stored in the `highscores` collection as `{ name, score, character, createdAt }`.
 The Firebase web API key is meant to be public; the rules are what protect the data.
 Scores are submitted from the browser, so a determined player could post a fake score.
 Delete bad entries from the Firebase console.

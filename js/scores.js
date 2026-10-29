@@ -37,7 +37,7 @@ window.Scores = (() => {
       d.collection(COLLECTION).orderBy('score', 'desc').limit(SIZE).get()), ms);
     const when = doc => { const t = doc.get('createdAt'); return t ? t.toMillis() : Infinity; };
     cache = snap.docs
-      .map(doc => ({ id: doc.id, name: doc.get('name'), score: doc.get('score'), at: when(doc) }))
+      .map(doc => ({ id: doc.id, name: doc.get('name'), score: doc.get('score'), character: doc.get('character'), at: when(doc) }))
       .sort((a, b) => b.score - a.score || a.at - b.at); // ties: earlier entry ranks higher
     return cache;
   }
@@ -53,10 +53,10 @@ window.Scores = (() => {
     return place <= SIZE ? place : 0;
   }
 
-  async function submit(name, score) {
+  async function submit(name, score, character) {
     const d = await withTimeout(db(), 8000);
     const ref = await withTimeout(d.collection(COLLECTION).add({
-      name, score, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      name, score, character, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     }), 8000);
     return ref.id;
   }
@@ -74,7 +74,8 @@ window.Scores = (() => {
   const ordinal = n => n + (n % 10 === 1 && n !== 11 ? 'ST' : n % 10 === 2 && n !== 12 ? 'ND' : n % 10 === 3 && n !== 13 ? 'RD' : 'TH');
 
   // Resolves with the saved entry's id, or null if the player skipped.
-  function promptName(score, place) {
+  // `character` is the name of the chef the player used.
+  function promptName(score, place, character) {
     const dlg = $('name-dialog'), form = $('name-form'), input = $('name-input');
     const msg = $('name-msg'), submitBtn = $('name-submit'), skipBtn = $('name-skip');
     input.maxLength = MAX_NAME;
@@ -100,7 +101,7 @@ window.Scores = (() => {
         submitBtn.disabled = true;
         msg.textContent = 'SAVING...';
         try {
-          done(await submit(name, score));
+          done(await submit(name, score, character));
         } catch (err) {
           console.warn('Sandwich Time: could not save score', err);
           msg.textContent = 'COULD NOT SAVE. TRY AGAIN?';
@@ -117,6 +118,16 @@ window.Scores = (() => {
     });
   }
 
+  // Small picture of the chef used for an entry (matched by name in config).
+  // Older entries without a chef get an empty slot so the columns line up.
+  function chefIcon(character) {
+    const def = CFG.characters.find(c => c.name === character);
+    const el = document.createElement(def ? 'img' : 'span');
+    el.className = 'chef';
+    if (def) { el.src = def.sprite; el.alt = def.name; el.title = def.name; }
+    return el;
+  }
+
   // Shows the top 10. `highlightId` marks the player's own new entry.
   function showBoard(highlightId = null) {
     const dlg = $('scores-dialog'), list = $('scores-list'), msg = $('scores-msg');
@@ -130,7 +141,7 @@ window.Scores = (() => {
         rank.textContent = i + 1;
         name.textContent = String(r.name || '').toUpperCase();
         pts.textContent = String(r.score).padStart(6, '0');
-        li.append(rank, name, pts);
+        li.append(rank, name, chefIcon(r.character), pts);
         list.appendChild(li);
       });
       msg.textContent = rows.length ? '' : 'NO SCORES YET. BE THE FIRST!';

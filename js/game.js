@@ -472,7 +472,7 @@
         if (G.timer <= 0 && G.place && !G.modal) {
           const place = G.place;
           G.place = 0;
-          openModal(() => window.Scores.promptName(G.score, place)
+          openModal(() => window.Scores.promptName(G.score, place, CFG.characters[G.charIndex].name)
             .then(id => id && window.Scores.showBoard(id))
             .then(() => { G.state = 'title'; }));
         }
