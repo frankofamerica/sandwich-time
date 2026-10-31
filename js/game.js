@@ -60,7 +60,8 @@
     unlocked: new Set(), // base character indexes currently swapped for their secret player
     taps: null,        // select screen: { slot, count } of consecutive taps on one tile
   };
-  if (CFG.characters[G.charIndex].secret) G.unlocked.add(baseOf(G.charIndex));
+  // Secret players are never saved; fall back to the player that unlocks them.
+  if (CFG.characters[G.charIndex].secret) G.charIndex = baseOf(G.charIndex);
   Sfx.setMuted(store.get('muted', false));
 
   // ------------------------------------------------------------ grid movement
@@ -95,7 +96,7 @@
     G.pepper = CFG.startingPepper;
     G.levelNum = 1;
     G.nextLifeAt = CFG.extraLifeAt;
-    store.set('char', G.charIndex);
+    store.set('char', CFG.characters[G.charIndex].secret ? baseOf(G.charIndex) : G.charIndex);
     Sfx.start();
     loadLevel();
   }
@@ -901,6 +902,7 @@
     acc += Math.min(0.1, (now - last) / 1000);
     last = now;
     while (acc >= DT) { update(DT); acc -= DT; }
+    Sfx.music(G.state === 'playing' && !G.modal);
     render();
     requestAnimationFrame(frame);
   }
