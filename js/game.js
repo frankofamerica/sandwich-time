@@ -427,7 +427,7 @@
       if (ev.type === 'mute') { Sfx.setMuted(!Sfx.muted); store.set('muted', Sfx.muted); continue; }
       switch (G.state) {
         case 'title':
-          if (ev.type === 'tap' && window.Scores.enabled && rectsHit({ x: ev.x, y: ev.y, w: 1, h: 1 }, HISCORE_BTN))
+          if (ev.type === 'tap' && window.Scores.enabled && rectsHit({ x: ev.x, y: ev.y, w: 1, h: 1 }, hiscoreBtn()))
             openModal(() => window.Scores.showBoard());
           else if (ev.type === 'confirm' || ev.type === 'pepper' || ev.type === 'tap') { G.state = 'select'; Sfx.select(); }
           break;
@@ -798,7 +798,11 @@
   }
 
   // ------------------------------------------------------------ screens
-  const HISCORE_BTN = { x: W / 2 - 120, y: 456, w: 240, h: 36 }; // title-screen tap target for the top 10
+  // Title-screen tap target for the top 10. Bigger on touch screens, which
+  // have no controls hint line below it.
+  const hiscoreBtn = () => document.body.classList.contains('touch')
+    ? { x: W / 2 - 170, y: 452, w: 340, h: 62, big: true }
+    : { x: W / 2 - 120, y: 456, w: 240, h: 36 };
 
   function drawTitle() {
     const img = sprites.title;
@@ -820,7 +824,7 @@
       text(CFG.villains[k].name.toUpperCase(), x, 432, 7, '#fff');
     });
 
-    const hb = HISCORE_BTN; // border doubles as the visible tap target for the top 10
+    const hb = hiscoreBtn(); // border doubles as the visible tap target for the top 10
     ctx.fillStyle = '#091140';
     ctx.strokeStyle = '#F6E300';
     ctx.lineWidth = 2;
@@ -830,8 +834,9 @@
     ctx.stroke();
     // center the one or two lines of text vertically in the box
     const cy = hb.y + hb.h / 2, two = window.Scores.enabled;
-    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, two ? cy - 6 : cy, 8, '#F6E300');
-    if (two) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, cy + 7, 6, '#F6E300');
+    const big = hb.big ? 1.6 : 1;
+    text(`HI-SCORE ${String(window.Scores.best).padStart(6, '0')}`, W / 2, two ? cy - 6 * big : cy, 8 * big, '#F6E300');
+    if (two) text(touch ? 'TAP FOR TOP 10' : 'CLICK FOR TOP 10', W / 2, cy + 7 * big, 6 * big, '#F6E300');
     if (!touch) text('ARROWS/WASD MOVE  SPACE PEPPER  P PAUSE  M MUTE', W / 2, 516, 6, '#F9FAFB');
   }
 
