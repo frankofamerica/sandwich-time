@@ -40,6 +40,14 @@
     return Promise.all(jobs);
   }
 
+  // ------------------------------------------------------------ secret players
+  // Each select-screen slot holds a regular character, or the secret one it
+  // unlocks (see `secret` in config.js).
+  const BASE_CHARS = CFG.characters.map((c, i) => i).filter(i => !CFG.characters[i].secret);
+  const baseOf = i => CFG.characters.findIndex(c => c.name === CFG.characters[i].secret);
+  const secretOf = b => CFG.characters.findIndex(c => c.secret === CFG.characters[b].name);
+  const UNLOCK_TAPS = 4;
+
   // ------------------------------------------------------------ state
   const G = {
     state: 'loading', t: 0, timer: 0, prevState: null,
@@ -49,7 +57,10 @@
     cloud: null, popups: [], bonus: null, dropCount: 0,
     modal: false,      // a high-score dialog is open; the game ignores input
     place: null,       // game over: null while checking the leaderboard, then 1..10 or 0 (didn't place)
+    unlocked: new Set(), // base character indexes currently swapped for their secret player
+    taps: null,        // select screen: { slot, count } of consecutive taps on one tile
   };
+  if (CFG.characters[G.charIndex].secret) G.unlocked.add(baseOf(G.charIndex));
   Sfx.setMuted(store.get('muted', false));
 
   // ------------------------------------------------------------ grid movement
@@ -490,8 +501,11 @@
   const SELECT_TILE = { w: 100, h: 124, gap: 12 };
   const START_BTN = { x: W / 2 - 95, y: 410, w: 190, h: 44 };
 
+  // Character index shown in each select tile.
+  const selectSlots = () => BASE_CHARS.map(b => G.unlocked.has(b) ? secretOf(b) : b);
+
   function selectTiles() {
-    const n = CFG.characters.length, perRow = 4, tiles = [];
+    const n = BASE_CHARS.length, perRow = 4, tiles = [];
     for (let i = 0; i < n; i++) {
       const row = Math.floor(i / perRow), inRow = Math.min(perRow, n - row * perRow), col = i % perRow;
       const rowW = inRow * SELECT_TILE.w + (inRow - 1) * SELECT_TILE.gap;
@@ -502,13 +516,13 @@
   }
 
   function handleSelectEvent(ev) {
-    const n = CFG.characters.length;
-    const move = d => { G.charIndex = (G.charIndex + d + n) % n; Sfx.select(); };
+    const slots = selectSlots(), n = slots.length, at = slots.indexOf(G.charIndex);
+    const move = d => { G.charIndex = slots[(at + d + n) % n]; G.taps = null; Sfx.select(); };
     if (ev.type === 'dir') {
       if (ev.dir === 'L') move(-1);
       else if (ev.dir === 'R') move(1);
-      else if (ev.dir === 'U' && G.charIndex >= 4) move(-4);
-      else if (ev.dir === 'D' && G.charIndex + 4 < n) move(4);
+      else if (ev.dir === 'U' && at >= 4) move(-4);
+      else if (ev.dir === 'D' && at + 4 < n) move(4);
     } else if (ev.type === 'confirm' || ev.type === 'pepper') {
       startGame();
     } else if (ev.type === 'pause') {
@@ -516,11 +530,19 @@
     } else if (ev.type === 'tap') {
       const pt = { x: ev.x, y: ev.y, w: 1, h: 1 };
       if (rectsHit(pt, START_BTN)) { startGame(); return; }
-      selectTiles().forEach((t, i) => {
-        if (!rectsHit(pt, t)) return;
-        if (i === G.charIndex) startGame();
-        else { G.charIndex = i; Sfx.select(); }
-      });
+      const i = selectTiles().findIndex(t => rectsHit(pt, t));
+      if (i < 0) { G.taps = null; return; }
+      G.taps = G.taps && G.taps.slot === i ? { slot: i, count: G.taps.count + 1 } : { slot: i, count: 1 };
+      const b = BASE_CHARS[i];
+      if (G.taps.count >= UNLOCK_TAPS && secretOf(b) >= 0) {
+        if (G.unlocked.has(b)) G.unlocked.delete(b); else G.unlocked.add(b);
+        G.taps = null;
+        G.charIndex = selectSlots()[i];
+        Sfx.bonusAppear();
+      } else {
+        G.charIndex = slots[i];
+        Sfx.select();
+      }
     }
   }
 
@@ -814,12 +836,13 @@
 
   function drawSelect() {
     text('CHOOSE YOUR PLAYER', W / 2, 60, 14, '#F6E300');
+    const slots = selectSlots();
     selectTiles().forEach((t, i) => {
-      const sel = i === G.charIndex, def = CFG.characters[i];
+      const c = slots[i], sel = c === G.charIndex, def = CFG.characters[c];
       roundRect(t.x - 3, t.y - 3, t.w + 6, t.h + 6, 10, sel ? '#F6E300' : '#2a2f55');
       roundRect(t.x, t.y, t.w, t.h, 8, sel ? '#5c94fc' : '#151933');
       const bob = sel && Math.floor(G.t * 4) % 2 ? -3 : 0;
-      drawSprite(sprites.characters[i], def, t.x + t.w / 2, t.y + 88, { size: 72, bob });
+      drawSprite(sprites.characters[c], def, t.x + t.w / 2, t.y + 88, { size: 72, bob });
       const words = def.name.toUpperCase().split(' ');
       const lines = words.length > 2 ? [words[0], words.slice(1).join(' ')] : [words.join(' ')];
       lines.forEach((ln, j) => text(ln, t.x + t.w / 2, t.y + 100 + j * 11 - (lines.length - 1) * 2, 7, sel ? '#F6E300' : '#aaa'));

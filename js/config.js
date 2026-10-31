@@ -8,7 +8,7 @@ window.GAME_CONFIG = {
     text: 'Sandwich Time',              // used only if the image fails to load
   },
 
-  // 7 playable characters. Sprites should face RIGHT (the game flips them).
+  // 7 playable characters + 3 secret ones. Sprites should face RIGHT (the game flips them).
   // `frames` > 1 means the PNG is a horizontal strip of walk-cycle frames.
   characters: [
     { name: 'Soppressauter',   sprite: 'assets/characters/sopressauter.png', frames: 1, color: '#e63946' },
@@ -18,6 +18,12 @@ window.GAME_CONFIG = {
     { name: 'Feldham',     sprite: 'assets/characters/feldham.png', frames: 1, color: '#9b5de5' },
     { name: 'Axisalami', sprite: 'assets/characters/axisalami.png', frames: 1, color: '#06d6a0' },
     { name: 'Billogna',  sprite: 'assets/characters/billogna.png', frames: 1, color: '#ffd166' },
+
+    // Secret players. On the select screen, tap the player named in `secret`
+    // 4 times in a row to swap it for the secret one (4 more taps swaps back).
+    { name: 'Benson',    sprite: 'assets/characters/benson.png', frames: 1, color: '#8d99ae', secret: 'Joevolone' },
+    { name: 'Borcheese', sprite: 'assets/characters/borcheese.png', frames: 1, color: '#ffb703', secret: 'Rusciutto' },
+    { name: 'Turkeever', sprite: 'assets/characters/turkeever.png', frames: 1, color: '#bc6c25', secret: 'Roast Frank' },
   ],
 
   // 3 villains. speed = movement multiplier, smart = 0..1 chance to chase you.
